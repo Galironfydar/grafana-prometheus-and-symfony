@@ -1,7 +1,13 @@
 # Infrastructure Setup with Docker Compose
 
 This setup includes the following services:
-- traefik.localhost - Reverse proxy and load balancer
-- grafana.localhost - Dashboard for visualization
-- prometheus.localhost - Metrics collection
-- app.localhost - Symfony Skeleton Application
+- http://traefik.localhost - Reverse proxy and load balancer
+- http://grafana.localhost - Dashboard for visualization
+- http://prometheus.localhost - Metrics collection
+- http://app.localhost - Symfony Skeleton Application with some Fake API calls
+
+# Grafana
+
+Username: admin
+Password: admin
+

@@ -8,7 +8,9 @@ services:
     depends_on:
       app-nginx:
         condition: service_started
-    command: run --no-connection-reuse --quiet /home/k6/scripts/api-load-test.js
+      app-php:
+        condition: service_started
+    entrypoint: "sleep 60 && k6 run --no-connection-reuse --quiet /home/k6/scripts/api-load-test.js"
 
 volumes:
   volume-tester-logs: 

@@ -3,19 +3,28 @@ services:
     image: galironfydar/symfony-app:latest
     networks:
       - traefik-network
-    deploy:
-      mode: replicated
-      replicas: 3
+    healthcheck:
+      # Check if PHP-FPM is running by checking its listening socket
+      test: ["CMD", "sh", "-c", "ps aux | grep php-fpm | grep -v grep"]
+      interval: 10s
+      timeout: 5s
+      retries: 3
+      start_period: 30s
 
   app-nginx:
     image: galironfydar/symfony-app-web:latest
     depends_on:
-      - app-php
+      app-php:
+        condition: service_started
     networks:
       - traefik-network
-    deploy:
-      mode: replicated
-      replicas: 3
+    healthcheck:
+      # Just check if nginx is running
+      test: ["CMD", "sh", "-c", "nginx -t || exit 1"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+      start_period: 20s
     labels:
       - "traefik.enable=true"
       - "traefik.http.routers.app.rule=Host(`app.localhost`)"

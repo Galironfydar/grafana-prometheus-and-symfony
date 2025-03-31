@@ -1,0 +1,9 @@
+.env
+
+# Ignore entire directories
+app/
+volume-tester/
+
+# Build script
+build-and-push.sh
+

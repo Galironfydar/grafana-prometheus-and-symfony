@@ -1,0 +1,14 @@
+name: containerized-traffic-generator
+
+services:
+  volume-tester-container:
+    image: ${DOCKER_HUB_USERNAME:-galironfydar}/traffic-generator:latest
+    networks:
+      - traefik-network
+    depends_on:
+      app-nginx:
+        condition: service_started
+    command: run --no-connection-reuse --quiet /home/k6/scripts/api-load-test.js
+
+volumes:
+  volume-tester-logs: 

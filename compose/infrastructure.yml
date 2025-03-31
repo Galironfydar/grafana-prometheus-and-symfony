@@ -1,0 +1,32 @@
+name: infrastructure-services
+
+services:
+  traefik:
+    image: traefik:v2.10
+    container_name: traefik
+    ports:
+      - "80:80"
+      - "8080:8080"
+    command:
+      - "--api.insecure=true"
+      - "--providers.docker=true"
+      - "--providers.docker.exposedbydefault=false"
+      - "--entrypoints.web.address=:80"
+      - "--metrics.prometheus=true"
+      - "--metrics.prometheus.entrypoint=traefik"
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock:ro
+      - ../traefik/traefik.yml:/etc/traefik/traefik.yml:ro
+      - ../traefik/config:/etc/traefik/config:ro
+    networks:
+      - traefik-network
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.traefik.rule=Host(`traefik.localhost`)"
+      - "traefik.http.services.traefik.loadbalancer.server.port=8080"
+      - "traefik.http.routers.traefik.service=api@internal"
+      - "traefik.http.middlewares.traefik-auth.basicauth.users=admin:$$apr1$$talDAqik$$82CsCVgdQGFjZ1ZFxpVkU/"  # admin/admin
+      - "traefik.http.routers.traefik.middlewares=traefik-auth"
+      - "prometheus.scrape=true"
+      - "prometheus.port=8080"
+      - "prometheus.metrics.path=/metrics" 

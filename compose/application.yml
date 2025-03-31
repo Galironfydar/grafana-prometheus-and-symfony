@@ -1,0 +1,27 @@
+services:
+  app-php:
+    image: galironfydar/symfony-app:latest
+    networks:
+      - traefik-network
+    deploy:
+      mode: replicated
+      replicas: 3
+
+  app-nginx:
+    image: galironfydar/symfony-app-web:latest
+    depends_on:
+      - app-php
+    networks:
+      - traefik-network
+    deploy:
+      mode: replicated
+      replicas: 3
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.app.rule=Host(`app.localhost`)"
+      - "traefik.http.routers.app.entrypoints=web"
+      - "traefik.http.services.app.loadbalancer.server.port=80"
+      - "traefik.http.services.app.loadbalancer.sticky=true"
+      - "traefik.http.services.app.loadbalancer.healthcheck.path=/api/success"
+      - "traefik.http.services.app.loadbalancer.healthcheck.interval=5s"
+      - "traefik.http.services.app.loadbalancer.healthcheck.timeout=3s"

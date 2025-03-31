@@ -1,0 +1,22 @@
+name: application-stack
+
+include:
+  - ./compose/infrastructure.yml
+  - ./compose/monitoring.yml
+  - ./compose/application.yml
+  - ./compose/database.yml
+  - ./compose/traffic-generator.yml
+
+networks:
+  traefik-network:
+    driver: bridge
+    name: traefik-network
+  default:
+    driver: bridge
+
+volumes:
+  grafana-data:
+  prometheus-data:
+  npm_data:
+  npm_ssl:
+  volume-tester-logs: 
